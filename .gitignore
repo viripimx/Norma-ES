@@ -1,0 +1,12 @@
+# Sistema operativo / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Nunca deben versionarse datos reales de leads ni exports del Sheet
+*.csv
+leads-export*
+*credenciales*
+*secrets*
+Proyecto Contaduria/

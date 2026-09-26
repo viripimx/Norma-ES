@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recibimos tu información — Norma Escobar</title>
+<meta name="description" content="Recibimos tu información. Norma te contactará por WhatsApp para definir los siguientes pasos.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Lato:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="logo" href="index.html" aria-label="Norma Escobar — Contadora — Inicio">
+      <img class="logo-img" src="assets/logo.png" alt="Norma Escobar — Contadora">
+    </a>
+  </div>
+</header>
+
+<main id="main">
+  <section class="section section--gracias">
+    <div class="container container--narrow gracias-content">
+      <h1 class="section-title">Recibimos tu información.</h1>
+      <p class="section-lead">Norma revisará tus datos y te contactará para conocer mejor tu situación y explicarte el siguiente paso.</p>
+
+      <a class="btn btn--primary btn--large" href="#" id="whatsapp-gracias-link"
+         data-cta-location="gracias" data-whatsapp-link>Hablar por WhatsApp</a>
+
+      <p class="gracias-links">
+        <a href="index.html">Volver al inicio</a> ·
+        <a href="index.html#faq">Ver preguntas frecuentes</a>
+      </p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <img class="logo-img logo-img--footer" src="assets/logo.png" alt="Norma Escobar — Contadora">
+  </div>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/analytics.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.NormaAnalytics) {
+      window.NormaAnalytics.init();
+      window.NormaAnalytics.trackEvent('thank_you_view', {});
+    }
+    var link = document.getElementById('whatsapp-gracias-link');
+    if (link && window.CONFIG) {
+      var msg = 'Hola, acabo de enviar mis datos para revisar mi situación fiscal y quiero continuar por WhatsApp.';
+      link.href = 'https://wa.me/' + window.CONFIG.whatsappNumber.replace(/[^0-9]/g, '') + '?text=' + encodeURIComponent(msg);
+      link.addEventListener('click', function () {
+        if (window.NormaAnalytics) {
+          window.NormaAnalytics.trackEvent('whatsapp_click', { origin: 'gracias' });
+        }
+      });
+    }
+  });
+</script>
+</body>
+</html>
