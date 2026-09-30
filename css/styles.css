@@ -37,7 +37,11 @@
 
 /* ---------- Reset básico ---------- */
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; scroll-padding-top: var(--sticky-header-offset, 72px); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
 
 /* El atributo [hidden] debe ganar siempre, incluso sobre reglas de
    componente (ej. .btn) que declaran su propio "display". */
@@ -158,6 +162,7 @@ h1, h2, h3 {
   padding-bottom: var(--space-1);
 }
 .logo {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   text-decoration: none;
@@ -180,6 +185,7 @@ h1, h2, h3 {
 .site-nav a:hover { color: var(--color-petrol); }
 
 .nav-toggle {
+  flex-shrink: 0;
   margin-left: auto;
   background: none;
   border: none;
@@ -198,7 +204,7 @@ h1, h2, h3 {
 .nav-toggle-bar::before { content: ""; position: absolute; top: -6px; width: 22px; height: 2px; background: var(--color-petrol); }
 .nav-toggle-bar::after { content: ""; position: absolute; top: 6px; width: 22px; height: 2px; background: var(--color-petrol); }
 
-.btn--header { margin-left: var(--space-2); }
+.btn--header { margin-left: var(--space-2); flex-shrink: 0; white-space: nowrap; }
 
 /* ---------- Botones ---------- */
 .btn {
@@ -303,6 +309,7 @@ h1, h2, h3 {
      para no perder definición (evitar upscaling). */
   max-width: 505px;
   width: 100%;
+  height: auto;
   margin: var(--space-3) 0;
   border-radius: 6px;
 }
@@ -314,7 +321,6 @@ h1, h2, h3 {
   margin: var(--space-3) 0;
 }
 .card-grid--4 { grid-template-columns: repeat(1, 1fr); }
-.card-grid--3 { grid-template-columns: repeat(1, 1fr); }
 
 .card {
   padding-top: var(--space-2);
@@ -324,6 +330,7 @@ h1, h2, h3 {
 
 /* ---------- Sección "Problema" — lista editorial, no tarjetas ---------- */
 .situation-intro {
+  line-height: 1.6;
   font-family: var(--font-titulo);
   font-weight: 600;
   font-size: 1.5rem;
@@ -452,6 +459,9 @@ h1, h2, h3 {
 
 /* ---------- Diagnóstico ---------- */
 .diagnostico-form { margin-top: var(--space-4); }
+.diagnostico-form .btn--primary { background: var(--color-ivory); color: var(--color-petrol); }
+.diagnostico-form .btn--primary:hover { background: var(--color-ivory-soft); }
+.diagnostico-form .btn--ghost { color: var(--color-ivory); border-color: var(--color-ivory); }
 
 .form-progress {
   display: flex;
@@ -576,7 +586,6 @@ legend {
   .situation-list { columns: 1; }
 
   .card-grid--4 { grid-template-columns: repeat(2, 1fr); }
-  .card-grid--3 { grid-template-columns: repeat(3, 1fr); }
   .fact-list { grid-template-columns: repeat(3, 1fr); }
 
   .steps { grid-template-columns: repeat(2, 1fr); }
@@ -591,9 +600,6 @@ legend {
   .hero-text { padding-right: var(--space-4); }
 
   .steps { grid-template-columns: repeat(4, 1fr); }
-}
-
-@media (min-width: 1024px) {
   .site-nav { font-size: .95rem; gap: var(--space-3); }
 }
 
@@ -603,6 +609,11 @@ legend {
   .hero-title { font-size: 3.1rem; }
   .hero-text-line { font-size: 1.15rem; }
   .section-title { font-size: 2rem; }
+}
+
+@media (max-width: 1023px) {
+  .header-inner { gap: var(--space-1); }
+  .btn--header { margin-left: 0; padding-left: 14px; padding-right: 14px; }
 }
 
 /* Menú mobile abierto */

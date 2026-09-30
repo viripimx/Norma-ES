@@ -32,6 +32,22 @@ var MOTIVOS_VALIDOS = ["REVISAR", "CONTABILIDAD", "PENDIENTE", "FACTURACION", "H
 
 var CACHE_DEDUPE_SECONDS = 3600; // 1 hora es suficiente para dobles envíos/reintentos.
 
+// Límites de longitud del lado servidor. nombre y correo se exigen en
+// validatePayload (exceder rechaza la solicitud, no se truncan). El resto son
+// campos de contexto/metadata: se truncan en appendLeadRow, no rechazan nada,
+// así no cambia el formulario ni su copy.
+var MAX_LEN = {
+  nombre: 80,
+  correo: 200,
+  notas: 500,
+  fuente: 100,
+  campana: 150,
+  utm_medium: 150,
+  utm_content: 150,
+  utm_term: 150,
+  cta_origen: 100
+};
+
 function doPost(e) {
   var lock = LockService.getScriptLock();
   try {
@@ -90,7 +106,7 @@ function validatePayload(payload) {
   if (!payload.request_id || typeof payload.request_id !== "string") {
     return { valid: false, message: "Falta identificador de solicitud." };
   }
-  if (!payload.nombre || String(payload.nombre).trim().length === 0 || String(payload.nombre).length > 80) {
+  if (!payload.nombre || String(payload.nombre).trim().length === 0 || String(payload.nombre).length > MAX_LEN.nombre) {
     return { valid: false, message: "Nombre inválido." };
   }
   var whatsappDigits = String(payload.whatsapp || "").replace(/[^0-9]/g, "");
@@ -100,11 +116,20 @@ function validatePayload(payload) {
   if (payload.correo && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.correo)) {
     return { valid: false, message: "Correo inválido." };
   }
+  if (payload.correo && String(payload.correo).length > MAX_LEN.correo) {
+    return { valid: false, message: "Correo inválido." };
+  }
   if (!Array.isArray(payload.segmento) || payload.segmento.length === 0) {
     return { valid: false, message: "Falta seleccionar situación." };
   }
+  if (filterValidCodes(payload.segmento, SEGMENTOS_VALIDOS).length === 0) {
+    return { valid: false, message: "Selecciona una situación válida." };
+  }
   if (!Array.isArray(payload.motivo) || payload.motivo.length === 0) {
     return { valid: false, message: "Falta seleccionar motivo." };
+  }
+  if (filterValidCodes(payload.motivo, MOTIVOS_VALIDOS).length === 0) {
+    return { valid: false, message: "Selecciona un motivo válido." };
   }
   return { valid: true };
 }
@@ -113,6 +138,27 @@ function filterValidCodes(values, validList) {
   return (values || []).filter(function (v) {
     return validList.indexOf(v) !== -1;
   });
+}
+
+// Neutraliza valores que Google Sheets podría interpretar como fórmula
+// (si el primer carácter significativo es =, +, -, @, tab o retorno de carro),
+// anteponiendo una comilla simple para forzar texto. El texto normal
+// (acentos, espacios, puntuación interna) sale sin ningún cambio.
+function sanitizeForSheets(value) {
+  var str = String(value === undefined || value === null ? "" : value);
+  var leading = str.replace(/^[\s\t\r\n]+/, "");
+  var dangerousLeadChars = ["=", "+", "-", "@", "\t", "\r"];
+  if (leading.length > 0 && dangerousLeadChars.indexOf(leading.charAt(0)) !== -1) {
+    return "'" + str;
+  }
+  return str;
+}
+
+// Recorta un campo libre a una longitud máxima razonable (no rechaza la
+// solicitud, solo evita valores desproporcionados en Sheets).
+function truncateField(value, maxLength) {
+  var str = String(value === undefined || value === null ? "" : value);
+  return str.length > maxLength ? str.slice(0, maxLength) : str;
 }
 
 function getLeadsSheet() {
@@ -159,22 +205,37 @@ function appendLeadRow(sheet, leadId, payload) {
   var motivos = filterValidCodes(payload.motivo, MOTIVOS_VALIDOS).join(";");
   var utm = payload.utm || {};
 
+  // nombre y correo ya fueron validados en validatePayload (longitud máxima
+  // rechaza la solicitud, no se truncan) — aquí solo se sanean contra fórmulas.
+  var nombre = sanitizeForSheets(String(payload.nombre || "").trim());
+  var correo = sanitizeForSheets(String(payload.correo || "").trim());
+
+  // Campos externos de texto libre sin validación de rechazo: se recortan a un
+  // largo razonable y luego se sanean contra fórmulas antes de escribir en Sheets.
+  var notas = sanitizeForSheets(truncateField(String(payload.notas || "").trim(), MAX_LEN.notas));
+  var fuente = sanitizeForSheets(truncateField(utm.source ? String(utm.source) : "directo", MAX_LEN.fuente));
+  var campana = sanitizeForSheets(truncateField(utm.campaign ? String(utm.campaign) : "", MAX_LEN.campana));
+  var utmMedium = sanitizeForSheets(truncateField(utm.medium ? String(utm.medium) : "", MAX_LEN.utm_medium));
+  var utmContent = sanitizeForSheets(truncateField(utm.content ? String(utm.content) : "", MAX_LEN.utm_content));
+  var utmTerm = sanitizeForSheets(truncateField(utm.term ? String(utm.term) : "", MAX_LEN.utm_term));
+  var ctaOrigen = sanitizeForSheets(truncateField(String(payload.cta_origen || ""), MAX_LEN.cta_origen));
+
   var row = [
     leadId,                                   // id
     fecha,                                     // fecha_creacion
     hora,                                      // hora_creacion
-    String(payload.nombre || "").trim(),       // nombre
-    "'" + String(payload.whatsapp || "").trim(), // whatsapp (prefijo ' para forzar texto)
-    String(payload.correo || "").trim(),       // correo
+    nombre,                                     // nombre
+    "'" + String(payload.whatsapp || "").trim(), // whatsapp (prefijo ' para forzar texto, sin cambios)
+    correo,                                     // correo
     segmentos,                                 // segmento
     motivos,                                   // motivo
-    String(payload.notas || "").trim(),        // notas
-    utm.source ? String(utm.source) : "directo", // fuente
-    utm.campaign ? String(utm.campaign) : "",  // campana
-    utm.medium ? String(utm.medium) : "",      // utm_medium
-    utm.content ? String(utm.content) : "",    // utm_content
-    utm.term ? String(utm.term) : "",          // utm_term
-    String(payload.cta_origen || ""),          // cta_origen
+    notas,                                      // notas
+    fuente,                                     // fuente
+    campana,                                    // campana
+    utmMedium,                                  // utm_medium
+    utmContent,                                 // utm_content
+    utmTerm,                                    // utm_term
+    ctaOrigen,                                  // cta_origen
     "Nuevo",                                   // etapa
     calcularTemperatura(motivos),              // temperatura
     "",                                        // fecha_ultima_interaccion

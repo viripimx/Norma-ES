@@ -51,7 +51,24 @@
   function smoothScrollTo(hash) {
     var target = document.querySelector(hash);
     if (!target) return;
-    target.scrollIntoView({ behavior: "smooth", block: "start" });
+    var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    target.scrollIntoView({ behavior: reducedMotion ? "instant" : "smooth", block: "start" });
+  }
+
+  function setupAnchorOffset() {
+    var header = document.querySelector(".site-header");
+    if (!header) return;
+    function updateOffset() {
+      document.documentElement.style.setProperty("--sticky-header-offset", (header.offsetHeight + 8) + "px");
+    }
+    updateOffset();
+    window.addEventListener("resize", updateOffset);
+    if (window.ResizeObserver) new ResizeObserver(updateOffset).observe(header);
+    // Reajusta también las anclas al entrar directamente con un fragmento.
+    if (window.location.hash) {
+      var target = document.getElementById(window.location.hash.slice(1));
+      if (target) target.scrollIntoView({ behavior: "instant", block: "start" });
+    }
   }
 
   function setupCtaDelegation() {
@@ -103,6 +120,7 @@
   }
 
   document.addEventListener("DOMContentLoaded", function () {
+    setupAnchorOffset();
     if (window.NormaAnalytics) window.NormaAnalytics.init();
     if (window.NormaForm) window.NormaForm.init();
 

@@ -39,9 +39,7 @@ const CONFIG = {
   whatsappNumber: "525522801360",            // ← ya es el número real de Norma
   appsScriptUrl: "https://script.google.com/macros/s/XXXXX/exec", // ← URL del Web App desplegado
   ga4MeasurementId: "G-XXXXXXXXXX",          // ← Measurement ID real de GA4
-  graciasUrl: "gracias.html",
-  brandName: "Norma Escobar",
-  ctaPrincipalText: "Quiero revisar mi situación"
+  graciasUrl: "gracias.html"
 };
 ```
 

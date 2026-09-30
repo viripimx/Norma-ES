@@ -21,7 +21,6 @@
   };
 
   var gaLoaded = false;
-  var gaReady = false;
 
   function isGa4Configured() {
     return (
@@ -48,9 +47,6 @@
     var script = document.createElement("script");
     script.async = true;
     script.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(measurementId);
-    script.onload = function () {
-      gaReady = true;
-    };
     document.head.appendChild(script);
   }
 

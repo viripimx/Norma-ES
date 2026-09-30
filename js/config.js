@@ -10,11 +10,9 @@ const CONFIG = {
   // móviles de México registrados en WhatsApp antes de 2021 requieren el
   // "1" extra después del 52 para que el deep link funcione.
   whatsappNumber: "525522801360",
-  appsScriptUrl: "https://script.google.com/macros/s/AKfycbywJiU98dIXTXWyrYEF4zulmBNiYq1UmhAPF7i-HjU8I0_LGVZURYc3g7fvTZtLZaKKHw/exec",
+  appsScriptUrl: "https://script.google.com/macros/s/AKfycbyIOPMkL6MTr1elm5gleyWJmdkMLMhVIt1UEJbhWClwfvlNOBNMKucaCGtJEWD64KqMQg/exec",
   ga4MeasurementId: "G-V1Z6CYHME7",
-  graciasUrl: "gracias.html",
-  brandName: "Norma Escobar",
-  ctaPrincipalText: "Quiero revisar mi situación"
+  graciasUrl: "gracias.html"
 };
 
 // Se expone explícitamente en window para que el resto de los scripts

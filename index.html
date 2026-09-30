@@ -7,7 +7,9 @@
 <meta name="description" content="Revisamos tu situación, identificamos qué necesitas atender y te explicamos el siguiente paso.">
 <meta property="og:title" content="Norma Escobar — Contabilidad y cumplimiento fiscal">
 <meta property="og:description" content="Revisamos tu situación, identificamos qué necesitas atender y te explicamos el siguiente paso.">
-<meta property="og:image" content="assets/logo.png">
+<meta property="og:image" content="https://norma-es.vercel.app/assets/logo.png">
+<link rel="canonical" href="https://norma-es.vercel.app/">
+<meta property="og:url" content="https://norma-es.vercel.app/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="es_MX">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,7 +23,7 @@
 <header class="site-header" id="top">
   <div class="container header-inner">
     <a class="logo" href="#top" aria-label="Norma Escobar — Contadora — Inicio">
-      <img class="logo-img" src="assets/logo.png" alt="Norma Escobar — Contadora">
+      <img class="logo-img" src="assets/logo.png" width="453" height="301" alt="Norma Escobar — Contadora">
     </a>
 
     <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="site-nav">
@@ -57,7 +59,7 @@
       </div>
       <div class="hero-visual">
         <div class="hero-visual-frame">
-          <img class="hero-photo" src="assets/hero-editorial.png" alt="Norma Escobar revisando una situación fiscal con un cliente">
+          <img class="hero-photo" src="assets/hero-editorial.png" width="1536" height="1024" alt="Norma Escobar revisando una situación fiscal con un cliente">
         </div>
       </div>
     </div>
@@ -66,7 +68,7 @@
   <!-- PROBLEMA / RECONOCIMIENTO -->
   <section class="section" id="problema">
     <div class="container">
-      <p class="situation-intro">¿No tienes claro si todo está en orden?</p>
+      <h2 class="situation-intro">¿No tienes claro si todo está en orden?</h2>
       <div class="situation-list">
         <div class="situation-item">
           <p class="situation-item-title"><span class="situation-index">01</span> Tengo dudas</p>
@@ -146,7 +148,7 @@
     <div class="container">
       <h2 class="section-title">¿Necesitas acompañamiento continuo?</h2>
       <p class="section-lead">Si después de revisar tu situación necesitas apoyo recurrente, podemos trabajar contigo de acuerdo con tu operación.</p>
-      <img class="services-icons" src="assets/iconografia.png" alt="Áreas de servicio: contabilidad, asesoría fiscal, planeación financiera, acompañamiento y crecimiento">
+      <img class="services-icons" src="assets/iconografia.png" width="505" height="146" loading="lazy" alt="Áreas de servicio: contabilidad, asesoría fiscal, planeación financiera, acompañamiento y crecimiento">
       <div class="card-grid card-grid--4">
         <div class="card">
           <h3 class="card-title">Personas físicas</h3>
@@ -173,7 +175,7 @@
   <section class="section" id="sobre-norma">
     <div class="container about-inner">
       <div class="about-photo-frame">
-        <img class="about-photo" src="assets/norma.jpg" alt="Norma Escobar">
+        <img class="about-photo" src="assets/norma.jpg" width="1024" height="1536" loading="lazy" alt="Norma Escobar">
       </div>
       <div class="about-text">
         <h2 class="section-title">Una profesional pendiente de tu situación.</h2>
@@ -269,11 +271,11 @@
             <legend>¿Qué describe mejor tu situación?</legend>
 
             <div class="radio-group">
-              <label class="radio-option"><input type="radio" name="situacion" value="PF" required> Soy persona física</label>
-              <label class="radio-option"><input type="radio" name="situacion" value="PROFESIONISTA"> Soy profesionista / trabajo por mi cuenta</label>
-              <label class="radio-option"><input type="radio" name="situacion" value="NEGOCIO"> Tengo un negocio</label>
-              <label class="radio-option"><input type="radio" name="situacion" value="MORAL"> Tengo una persona moral</label>
-              <label class="radio-option"><input type="radio" name="situacion" value="NO_SEGURO"> No estoy seguro</label>
+              <label class="radio-option"><input type="radio" name="situacion" aria-describedby="error-situacion" value="PF" required> Soy persona física</label>
+              <label class="radio-option"><input type="radio" name="situacion" aria-describedby="error-situacion" value="PROFESIONISTA"> Soy profesionista / trabajo por mi cuenta</label>
+              <label class="radio-option"><input type="radio" name="situacion" aria-describedby="error-situacion" value="NEGOCIO"> Tengo un negocio</label>
+              <label class="radio-option"><input type="radio" name="situacion" aria-describedby="error-situacion" value="MORAL"> Tengo una persona moral</label>
+              <label class="radio-option"><input type="radio" name="situacion" aria-describedby="error-situacion" value="NO_SEGURO"> No estoy seguro</label>
             </div>
             <p class="field-error" id="error-situacion" aria-live="polite"></p>
           </fieldset>
@@ -284,12 +286,12 @@
             <legend>¿Qué necesitas?</legend>
 
             <div class="radio-group">
-              <label class="radio-option"><input type="radio" name="motivo" value="REVISAR" required> Quiero revisar mi situación fiscal</label>
-              <label class="radio-option"><input type="radio" name="motivo" value="CONTABILIDAD"> Necesito llevar mi contabilidad</label>
-              <label class="radio-option"><input type="radio" name="motivo" value="PENDIENTE"> Tengo una situación pendiente</label>
-              <label class="radio-option"><input type="radio" name="motivo" value="FACTURACION"> Necesito ayuda con facturación</label>
-              <label class="radio-option"><input type="radio" name="motivo" value="HABLAR"> Quiero hablar con Norma</label>
-              <label class="radio-option"><input type="radio" name="motivo" value="OTRO"> Otro</label>
+              <label class="radio-option"><input type="radio" name="motivo" aria-describedby="error-motivo" value="REVISAR" required> Quiero revisar mi situación fiscal</label>
+              <label class="radio-option"><input type="radio" name="motivo" aria-describedby="error-motivo" value="CONTABILIDAD"> Necesito llevar mi contabilidad</label>
+              <label class="radio-option"><input type="radio" name="motivo" aria-describedby="error-motivo" value="PENDIENTE"> Tengo una situación pendiente</label>
+              <label class="radio-option"><input type="radio" name="motivo" aria-describedby="error-motivo" value="FACTURACION"> Necesito ayuda con facturación</label>
+              <label class="radio-option"><input type="radio" name="motivo" aria-describedby="error-motivo" value="HABLAR"> Quiero hablar con Norma</label>
+              <label class="radio-option"><input type="radio" name="motivo" aria-describedby="error-motivo" value="OTRO"> Otro</label>
             </div>
             <p class="field-error" id="error-motivo" aria-live="polite"></p>
 
@@ -321,7 +323,7 @@
 <footer class="site-footer">
   <div class="container footer-inner">
     <div class="footer-brand">
-      <img class="logo-img logo-img--footer" src="assets/logo.png" alt="Norma Escobar — Contadora">
+      <img class="logo-img logo-img--footer" src="assets/logo.png" width="453" height="301" loading="lazy" alt="Norma Escobar — Contadora">
     </div>
     <p class="footer-contact">
       <a href="#" id="whatsapp-footer-link" data-cta-location="footer" data-whatsapp-link>WhatsApp</a>

@@ -19,11 +19,13 @@
   var TOTAL_STEPS = 3;
   var currentStep = 1;
   var state = "idle";
+  var formStarted = false;
+  var REQUEST_TIMEOUT_MS = 20000;
   var ctaOrigin = { location: "", type: "" };
   var utmParams = { source: "", medium: "", campaign: "", content: "", term: "" };
   var requestId = "";
 
-  var formEl, stepStatusEl, progressTextEl, btnAtras, btnSiguiente, btnEnviar;
+  var formEl, progressTextEl, btnAtras, btnSiguiente, btnEnviar;
 
   function $(selector, scope) {
     return (scope || document).querySelector(selector);
@@ -70,11 +72,23 @@
   function setError(fieldErrorId, message) {
     var el = document.getElementById(fieldErrorId);
     if (el) el.textContent = message || "";
+    $all('[aria-describedby~="' + fieldErrorId + '"]', formEl).forEach(function (field) {
+      field.setAttribute("aria-invalid", message ? "true" : "false");
+    });
+  }
+
+  function focusFirstError() {
+    var field = $('.form-step:not([hidden]) [aria-invalid="true"]', formEl);
+    if (field) field.focus();
+  }
+
+  function isSubmissionLocked() {
+    return state === "submitting" || state === "success";
   }
 
   // ---------- Navegación entre pasos ----------
 
-  function showStep(step) {
+  function showStep(step, moveFocus) {
     currentStep = step;
     $all(".form-step", formEl).forEach(function (stepEl) {
       var isActive = Number(stepEl.getAttribute("data-step")) === step;
@@ -96,7 +110,7 @@
 
     // Mueve el foco al primer campo/heading del paso nuevo (accesibilidad).
     var activeStepEl = $('.form-step[data-step="' + step + '"]', formEl);
-    if (activeStepEl) {
+    if (activeStepEl && moveFocus !== false) {
       var legend = activeStepEl.querySelector("legend");
       var firstField = activeStepEl.querySelector("input, select");
       if (firstField) {
@@ -196,6 +210,8 @@
     btnEnviar.disabled = isSubmitting;
     btnEnviar.textContent = isSubmitting ? "Enviando…" : ENVIAR_LABEL;
     btnAtras.disabled = isSubmitting;
+    btnSiguiente.disabled = isSubmitting;
+    formEl.setAttribute("aria-busy", String(isSubmitting));
   }
 
   function showFormStatus(message) {
@@ -212,6 +228,7 @@
   }
 
   function submitForm() {
+    if (isSubmissionLocked()) return;
     if (!isAppsScriptConfigured()) {
       state = "error";
       showFormStatus(
@@ -225,16 +242,22 @@
     showFormStatus("");
 
     var payload = buildPayload();
+    var controller = new AbortController();
+    var timeoutId = setTimeout(function () {
+      controller.abort();
+    }, REQUEST_TIMEOUT_MS);
 
     fetch(window.CONFIG.appsScriptUrl, {
       method: "POST",
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
+      signal: controller.signal
       // Sin header Content-Type explícito — ver nota al inicio del archivo.
     })
       .then(function (response) {
         return response.json();
       })
       .then(function (data) {
+        clearTimeout(timeoutId);
         if (data && data.status === "ok") {
           state = "success";
           if (window.NormaAnalytics) {
@@ -246,6 +269,7 @@
         }
       })
       .catch(function () {
+        clearTimeout(timeoutId);
         state = "error";
         setSubmitting(false);
         showFormStatus(
@@ -257,7 +281,11 @@
   // ---------- Eventos de navegación del formulario ----------
 
   function handleNext() {
-    if (!validateCurrentStep()) return;
+    if (isSubmissionLocked() || currentStep >= TOTAL_STEPS) return;
+    if (!validateCurrentStep()) {
+      focusFirstError();
+      return;
+    }
     state = "editing";
     if (window.NormaAnalytics) {
       window.NormaAnalytics.trackEvent("form_step_complete", { step: currentStep });
@@ -266,19 +294,29 @@
   }
 
   function handleBack() {
+    if (isSubmissionLocked() || currentStep <= 1) return;
     state = "editing";
     showStep(currentStep - 1);
   }
 
   function handleSubmit(event) {
     event.preventDefault();
-    if (!validateCurrentStep()) return;
+    if (isSubmissionLocked() || currentStep !== TOTAL_STEPS) return;
+    state = "validating";
+    var results = [validateStep1(), validateStep2(), validateStep3()];
+    var firstInvalid = results.indexOf(false);
+    if (firstInvalid !== -1) {
+      showStep(firstInvalid + 1, false);
+      focusFirstError();
+      return;
+    }
     submitForm();
   }
 
   function handleFirstInteraction() {
-    if (state === "idle") {
-      state = "editing";
+    if (!formStarted) {
+      formStarted = true;
+      if (!isSubmissionLocked()) state = "editing";
       if (window.NormaAnalytics) {
         window.NormaAnalytics.trackEvent("form_start", {});
       }
@@ -295,7 +333,6 @@
     formEl = document.getElementById("diagnostico-form");
     if (!formEl) return; // gracias.html no tiene formulario
 
-    stepStatusEl = document.getElementById("form-status");
     progressTextEl = document.getElementById("progress-text");
     btnAtras = document.getElementById("btn-atras");
     btnSiguiente = document.getElementById("btn-siguiente");
@@ -303,7 +340,7 @@
 
     requestId = generateRequestId();
     captureUtms();
-    showStep(1);
+    showStep(1, false);
 
     btnSiguiente.addEventListener("click", handleNext);
     btnAtras.addEventListener("click", handleBack);
