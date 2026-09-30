@@ -11,7 +11,7 @@ const CONFIG = {
   // "1" extra después del 52 para que el deep link funcione.
   whatsappNumber: "525522801360",
   appsScriptUrl: "https://script.google.com/macros/s/AKfycbyIOPMkL6MTr1elm5gleyWJmdkMLMhVIt1UEJbhWClwfvlNOBNMKucaCGtJEWD64KqMQg/exec",
-  ga4MeasurementId: "G-V1Z6CYHME7",
+  ga4MeasurementId: "G-DHRJXFEEPH",
   graciasUrl: "gracias.html"
 };
 
