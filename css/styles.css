@@ -527,6 +527,7 @@ legend {
   color: rgba(245,241,233,.7);
   margin-top: var(--space-1);
 }
+.field-privacy a { color: var(--color-ivory); text-decoration: underline; }
 
 .radio-group { display: grid; gap: var(--space-1); margin-bottom: var(--space-1); }
 .radio-option {
@@ -563,6 +564,30 @@ legend {
 .gracias-links { margin-top: var(--space-3); font-size: .9rem; }
 .gracias-links a { color: var(--color-petrol); text-decoration: underline; }
 
+/* ---------- Página de privacidad (reutiliza patrones existentes) ---------- */
+.legal-list {
+  display: grid;
+  gap: var(--space-1);
+  margin: var(--space-2) 0 var(--space-3);
+}
+.legal-list li {
+  padding-left: var(--space-2);
+  position: relative;
+  color: var(--color-graphite);
+}
+.legal-list li::before { content: "·"; position: absolute; left: 0; color: var(--color-sand); font-weight: 700; }
+
+.privacy-warning {
+  border-left: 3px solid var(--color-sand);
+  background: var(--color-ivory-soft);
+  padding: var(--space-2) var(--space-3);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  margin: var(--space-2) 0 var(--space-3);
+  font-size: .95rem;
+  color: var(--color-graphite);
+}
+.privacy-warning strong { color: var(--color-petrol); }
+
 /* ---------- Footer ---------- */
 .site-footer {
   background: var(--color-graphite);
@@ -573,6 +598,7 @@ legend {
 .footer-brand { display: flex; align-items: center; gap: var(--space-1); }
 .footer-contact a { color: var(--color-ivory); text-decoration: underline; }
 .footer-legal { font-size: .8rem; opacity: .6; }
+.footer-legal a { color: inherit; text-decoration: underline; }
 
 /* ==========================================================================
    Responsive — mobile-first (base ~375px), 768px, 1024px, 1280px

@@ -8,6 +8,7 @@ Sitio 100% estático (HTML + CSS + JavaScript vanilla). Sin frameworks, sin buil
 /
 ├── index.html          Landing completa + diagnóstico (#diagnostico)
 ├── gracias.html         Página de confirmación tras el envío
+├── privacidad.html      Aviso de Privacidad Integral (enlazado desde el formulario y el footer)
 ├── css/
 │   └── styles.css       Único archivo de estilos
 ├── js/
@@ -57,11 +58,12 @@ Estos valores **no se inventaron** y deben sustituirse con datos reales de Norma
 |---|---|---|
 | URL del Apps Script | `js/config.js` → `appsScriptUrl` | Se obtiene al desplegar el Web App (sección 5) |
 | GA4 Measurement ID | `js/config.js` → `ga4MeasurementId` | Crear la propiedad GA4 real |
-| Aviso de privacidad | Footer de `index.html` (enlace "próximamente") | Documento legal completo |
 | Tiempo de respuesta | No se muestra ningún tiempo en `gracias.html` (a propósito, para no inventarlo) | Definir si en el futuro se quiere comunicar uno |
 | Favicon | No hay `<link rel="icon">` en `index.html`/`gracias.html` | El Brandbook no incluye una variante cuadrada del monograma adecuada para favicon (`logo.png` es el lockup completo con wordmark, e `iconografia.png` son íconos de servicio, no de marca) — se dejó pendiente en vez de recortar/inventar uno. |
 
 **Resuelto en esta iteración:** el número de WhatsApp, el logo (`assets/logo.png`, usado tal cual en header y footer, sin recortar ni recolorear) y la fotografía de Norma (`assets/norma.jpg`) ya están integrados — ver sección 2 y la carpeta `assets/` arriba.
+
+**Aviso de Privacidad:** `privacidad.html` contiene el Aviso de Privacidad Integral completo (responsable, datos recabados, finalidades, derechos ARCO, etc.). El formulario de diagnóstico (paso 3, antes del botón de envío) y el footer de `index.html` y `gracias.html` enlazan a esta página.
 
 Mientras `appsScriptUrl` siga como `"[APPS_SCRIPT_URL_PENDIENTE]"`, el formulario muestra un mensaje indicando que el envío aún no está disponible, sin romperse. Mientras `ga4MeasurementId` siga como `"[GA4_PENDIENTE]"`, GA4 simplemente no se carga (el sitio funciona igual).
 
