@@ -1,0 +1,4 @@
+# Código fuente del backend (Google Apps Script). Vive versionado en GitHub
+# como referencia/despliegue manual (ver README, sección 5) pero no debe
+# publicarse como archivo estático servible en el sitio.
+apps-script/
