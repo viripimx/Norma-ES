@@ -175,6 +175,14 @@ h1, h2, h3 {
 }
 .logo-img--footer { height: 48px; }
 
+/* Logo horizontal aprobado (assets/logo-horizontal.png) — usado solo en
+   el header de index.html, con mayor presencia que el lockup pequeño
+   anterior. No se recorta ni se altera, solo se limita su altura. */
+.logo-img--header {
+  height: 44px;
+  width: auto;
+}
+
 .site-nav {
   display: none;
   gap: var(--space-3);
@@ -238,22 +246,21 @@ h1, h2, h3 {
 .btn--large { font-size: 1.05rem; padding: 14px 28px; }
 .btn:disabled { opacity: .6; cursor: not-allowed; }
 
-/* ---------- Hero ---------- */
+/* ---------- Hero (V1.1 — composición editorial, foto a sangre) ---------- */
 .hero {
-  padding-top: var(--space-4);
-  padding-bottom: var(--space-4);
+  padding: 0;
   overflow: hidden;
 }
 .hero-inner {
   display: grid;
-  gap: var(--space-4);
-  align-items: center;
+  grid-template-columns: 1fr;
 }
 .hero-text {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  position: relative;
+  justify-content: center;
+  padding: var(--space-4) var(--space-2);
 }
 .hero-eyebrow {
   font-family: var(--font-cuerpo);
@@ -264,9 +271,9 @@ h1, h2, h3 {
   color: var(--color-texto-muted);
 }
 .hero-title {
-  font-size: 2rem;
-  line-height: 1.12;
-  max-width: 16ch;
+  font-size: 2.1rem;
+  line-height: 1.1;
+  max-width: 18ch;
   margin-bottom: 0;
 }
 .hero-text-line {
@@ -275,31 +282,19 @@ h1, h2, h3 {
   max-width: 44ch;
   margin: 0;
 }
-.hero-cta-row { margin-top: var(--space-2); }
+.hero-cta-row { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-1); }
 .hero-cta-row .btn { display: inline-flex; align-items: center; gap: 8px; }
 
-.hero-text::before {
-  content: "";
-  position: absolute;
-  left: -24px;
-  top: 6px;
-  bottom: 24px;
-  width: 2px;
-  background: var(--color-sand);
-}
-
-.hero-visual-frame {
+.hero-visual {
   position: relative;
-  aspect-ratio: 4 / 3;
-  border-radius: 6px;
-  overflow: hidden;
   background: var(--color-ivory-soft);
+  aspect-ratio: 3 / 2;
 }
 .hero-photo {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 30%;
+  object-position: center 38%;
   display: block;
 }
 
@@ -608,7 +603,9 @@ legend {
   .site-nav { display: flex; gap: var(--space-2); font-size: .88rem; white-space: nowrap; }
   .nav-toggle { display: none; }
 
-  .hero-title { font-size: 2.5rem; }
+  .logo-img--header { height: 64px; }
+
+  .hero-title { font-size: 2.75rem; }
   .situation-list { columns: 1; }
 
   .card-grid--4 { grid-template-columns: repeat(2, 1fr); }
@@ -622,8 +619,21 @@ legend {
 }
 
 @media (min-width: 1024px) {
-  .hero-inner { grid-template-columns: 1.05fr 0.95fr; }
-  .hero-text { padding-right: var(--space-4); }
+  .hero-inner { grid-template-columns: .95fr 1.15fr; min-height: 620px; }
+  .hero-text { padding: var(--space-5) var(--space-4); }
+  .hero-title { font-size: 3.2rem; }
+  .hero-visual { aspect-ratio: auto; }
+  /* División editorial: línea sand sólida en el borde de la fotografía
+     (sin degradado — descartado tras comparar ambas opciones en el
+     prototipo V1.1). */
+  .hero-visual::before {
+    content: "";
+    position: absolute;
+    top: 0; bottom: 0; left: 0;
+    width: 4px;
+    background: var(--color-sand);
+    z-index: 1;
+  }
 
   .steps { grid-template-columns: repeat(4, 1fr); }
   .site-nav { font-size: .95rem; gap: var(--space-3); }
@@ -632,7 +642,7 @@ legend {
 @media (min-width: 1280px) {
   .card-grid--4 { grid-template-columns: repeat(4, 1fr); }
 
-  .hero-title { font-size: 3.1rem; }
+  .hero-title { font-size: 3.75rem; }
   .hero-text-line { font-size: 1.15rem; }
   .section-title { font-size: 2rem; }
 }
@@ -642,8 +652,17 @@ legend {
   .btn--header { margin-left: 0; padding-left: 14px; padding-right: 14px; }
 }
 
-/* Menú mobile abierto */
+/* El logo del header ganó presencia (44/64px vs. 40px anterior) y ya no
+   deja espacio para nav + CTA completos entre 768–1023px. Prioridad
+   validada en el prototipo V1.1: 1) logo, 2) CTA, 3) navegación — la
+   navegación colapsa antes (desde 768px, no solo <768px) en vez de
+   comprimir el CTA. */
 @media (max-width: 767px) {
+  .btn--header { font-size: .82rem; padding-left: 10px; padding-right: 10px; }
+}
+
+/* Menú mobile abierto — colapsado hasta 1023px (antes solo <767px) */
+@media (max-width: 1023px) {
   .site-nav {
     display: none;
     position: absolute;
@@ -658,4 +677,5 @@ legend {
   }
   .site-nav.is-open { display: flex; }
   .header-inner { position: relative; }
+  .nav-toggle { display: inline-block; }
 }
