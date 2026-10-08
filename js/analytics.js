@@ -20,7 +20,54 @@
     thank_you_view: []
   };
 
+  // Eventos existentes que además se reportan a Meta (sin parámetros).
+  // "Lead" se dispara en gracias.html (thank_you_view) y no en form.js,
+  // porque form.js redirige de inmediato y podría cancelar el envío.
+  var META_EVENTS = {
+    thank_you_view: "Lead",
+    whatsapp_click: "Contact"
+  };
+
   var gaLoaded = false;
+  var metaLoaded = false;
+
+  function isMetaConfigured() {
+    return (
+      window.CONFIG &&
+      /^[0-9]{10,20}$/.test(String(window.CONFIG.metaPixelId || ""))
+    );
+  }
+
+  function loadMetaPixel(pixelId) {
+    if (metaLoaded) return;
+    metaLoaded = true;
+
+    if (!window.fbq) {
+      var n = (window.fbq = function () {
+        if (n.callMethod) {
+          n.callMethod.apply(n, arguments);
+        } else {
+          n.queue.push(arguments);
+        }
+      });
+      if (!window._fbq) window._fbq = n;
+      n.push = n;
+      n.loaded = true;
+      n.version = "2.0";
+      n.queue = [];
+
+      var script = document.createElement("script");
+      script.async = true;
+      script.src = "https://connect.facebook.net/en_US/fbevents.js";
+      document.head.appendChild(script);
+    }
+
+    // Sin configuración automática (clics de botones, metadatos de página)
+    // y sin datos del usuario: solo PageView y los eventos de META_EVENTS.
+    window.fbq("set", "autoConfig", false, pixelId);
+    window.fbq("init", pixelId);
+    window.fbq("track", "PageView");
+  }
 
   function isGa4Configured() {
     return (
@@ -53,6 +100,9 @@
   function init() {
     if (isGa4Configured()) {
       loadGaScript(window.CONFIG.ga4MeasurementId);
+    }
+    if (isMetaConfigured()) {
+      loadMetaPixel(String(window.CONFIG.metaPixelId));
     }
     // Si GA4 no está configurado todavía, el sitio funciona igual;
     // trackEvent() simplemente no tendrá efecto (ver abajo).
@@ -98,6 +148,9 @@
 
     if (window.gtag) {
       window.gtag("event", eventName, clean);
+    }
+    if (META_EVENTS[eventName] && window.fbq) {
+      window.fbq("track", META_EVENTS[eventName]);
     }
     // Si GA4 no está configurado, no hacemos nada más: no rompemos el sitio.
   }

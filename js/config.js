@@ -12,6 +12,10 @@ const CONFIG = {
   whatsappNumber: "525522801360",
   appsScriptUrl: "https://script.google.com/macros/s/AKfycbyIOPMkL6MTr1elm5gleyWJmdkMLMhVIt1UEJbhWClwfvlNOBNMKucaCGtJEWD64KqMQg/exec",
   ga4MeasurementId: "G-DHRJXFEEPH",
+  // ID numérico del píxel de Meta (conjunto de datos "Norma Escobar - Sitio web").
+  // Si se cambia por "[META_PIXEL_PENDIENTE]" el píxel no se carga y no se
+  // envía nada a Meta.
+  metaPixelId: "1095795746533906",
   graciasUrl: "gracias.html"
 };
 
